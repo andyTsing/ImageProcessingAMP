@@ -1,4 +1,5 @@
 #include <Windows.h>
+#include "resource.h"
 
 LRESULT CALLBACK WndProc(
 	HWND hwnd,
@@ -21,6 +22,7 @@ int WINAPI WinMain(
 	wndclass.lpszClassName = L"ImageEffectsAMP";
 	wndclass.hInstance = hInstance;
 	wndclass.hbrBackground = (HBRUSH) GetStockObject(WHITE_BRUSH);
+	wndclass.lpszMenuName = MAKEINTRESOURCE(IDR_MENU);
 	wndclass.lpfnWndProc = WndProc;
 
 	RegisterClass(&wndclass);
@@ -54,6 +56,18 @@ LRESULT CALLBACK WndProc(
 	case WM_PAINT:
 		{
 			OnPaint(hwnd);
+			return 0;
+		}
+	case WM_COMMAND:
+		{
+			switch (LOWORD(wparam))
+			{
+			case IDC_FILE_EXIT:
+				{
+					DestroyWindow(hwnd);
+					return 0;
+				}
+			}
 			return 0;
 		}
 	case WM_DESTROY:
