@@ -7,6 +7,7 @@
 #include "IFilterProcessor.h"
 #include "NegativeFilterProcessor.h"
 #include "NegativeFilterProcessorAMP.h"
+#include "BlurFilterProcessor.h"
 
 LRESULT CALLBACK WndProc(
 	HWND hwnd,
@@ -24,6 +25,7 @@ BitmapPtr bitmap;
 void OnFileOpenClick(HWND hwnd);
 void OnFiltersNegativeClick(HWND hwnd);
 void OnFiltersNegativeAMPClick(HWND);
+void OnFiltersBlurClick(HWND);
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -89,6 +91,7 @@ LRESULT CALLBACK WndProc(
 			case IDC_FILE_OPEN: { OnFileOpenClick(hwnd); break; }
 			case IDC_FILTERS_NEGATIVE: { OnFiltersNegativeClick(hwnd); InvalidateWindow(hwnd); break; }
 			case IDC_FILTERS_NEGATIVE_AMP: { OnFiltersNegativeAMPClick(hwnd); InvalidateWindow(hwnd); break;}
+			case IDC_FILTERS_BLUR: { OnFiltersBlurClick(hwnd); InvalidateWindow(hwnd); break;}
 			}
 			return 0;
 		}
@@ -167,6 +170,12 @@ void OnFiltersNegativeAMPClick(HWND hwnd)
 {
 	NegativeFilterProcessorAMP negativeAMP;
 	ApplyFilter(negativeAMP);
+}
+
+void OnFiltersBlurClick(HWND hwnd)
+{
+	BlurFilterProcessor blur;
+	ApplyFilter(blur);
 }
 
 

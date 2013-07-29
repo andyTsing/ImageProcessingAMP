@@ -16,8 +16,6 @@ public :
 	{
 		using namespace concurrency;
 
-		int bpp = Gdiplus::GetPixelFormatSize(dest.PixelFormat);
-		
 		accelerator acc;
 		array<ArgbPackedPixel, 2> a((int)source.Height, (int)source.Width, acc.default_view);
 
