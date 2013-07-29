@@ -12,21 +12,21 @@ public :
 		)
 	{
 		int bpp = Gdiplus::GetPixelFormatSize(dest.PixelFormat);
-		int dist = 5;
+		const int DIST = 10;
 
 		int w = source.Width;
 		int h = source.Height;
 
-		for (int x = 0; x < dest.Width; x++)
-			for (int y = 0; y < dest.Height; y++)
+		for (int x = 0; x < w; x++)
+			for (int y = 0; y < h; y++)
 			{
 				int accumR = 0;
 				int accumG = 0;
 				int accumB = 0;
 				int count = 0;
-				for (int currentX = x - dist ; currentX < (x + dist); currentX++)
+				for (int currentX = x - DIST ; currentX < (x + DIST); currentX++)
 					if (currentX >= 0 && currentX < w)  
-						for (int currentY = y - dist ; currentY < (y + dist); currentY++)
+						for (int currentY = y - DIST ; currentY < (y + DIST); currentY++)
 							if (currentY >= 0 && currentY < h) 
 							{
 								COLORREF pixel = GetPixel(static_cast<byte *>(source.Scan0), currentX, currentY, dest.Stride, bpp);
