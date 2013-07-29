@@ -7,6 +7,8 @@ LRESULT CALLBACK WndProc(
 	LPARAM lparam
 	);
 
+void OnPaint(HWND hwnd);
+
 int WINAPI WinMain(
 	HINSTANCE hInstance,
 	HINSTANCE hPrevInstance,
@@ -51,10 +53,7 @@ LRESULT CALLBACK WndProc(
 	{
 	case WM_PAINT:
 		{
-			PAINTSTRUCT ps;
-			HDC hdc = BeginPaint(hwnd, &ps);
-
-			EndPaint(hwnd, &ps);
+			OnPaint(hwnd);
 			return 0;
 		}
 	case WM_DESTROY:
@@ -66,4 +65,12 @@ LRESULT CALLBACK WndProc(
 	default:
 		return DefWindowProc(hwnd, message, wparam, lparam);
 	}
+}
+
+void OnPaint(HWND hwnd)
+{
+	PAINTSTRUCT ps;
+	HDC hdc = BeginPaint(hwnd, &ps);
+
+	EndPaint(hwnd, &ps);
 }
