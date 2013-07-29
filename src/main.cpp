@@ -1,4 +1,7 @@
 #include <Windows.h>
+#include <gdiplus.h>
+
+#include "BitmapUtils.h"
 #include "resource.h"
 
 LRESULT CALLBACK WndProc(
@@ -9,6 +12,12 @@ LRESULT CALLBACK WndProc(
 	);
 
 void OnPaint(HWND hwnd);
+void OnCreate();
+void OnDestroy();
+
+BitmapPtr bitmap;
+
+void OnFileOpenCommand(HWND hwnd);
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -62,16 +71,19 @@ LRESULT CALLBACK WndProc(
 		{
 			switch (LOWORD(wparam))
 			{
-			case IDC_FILE_EXIT:
-				{
-					DestroyWindow(hwnd);
-					return 0;
-				}
+			case IDC_FILE_EXIT: { DestroyWindow(hwnd); break; }
+			case IDC_FILE_OPEN: { OnFileOpenCommand(hwnd); break; }
 			}
+			return 0;
+		}
+	case WM_CREATE:
+		{
+			OnCreate();
 			return 0;
 		}
 	case WM_DESTROY:
 		{
+			OnDestroy();
 			PostQuitMessage(0);
 			return 0;
 		}
@@ -81,10 +93,67 @@ LRESULT CALLBACK WndProc(
 	}
 }
 
+void OnFileOpenCommand(HWND hwnd)
+{
+	OPENFILENAME ofn;
+	wchar_t szFile[1024];
+
+	ZeroMemory(&ofn, sizeof(ofn));
+
+	ofn.lStructSize = sizeof(ofn);
+	ofn.lpstrFile = szFile;
+	ofn.hwndOwner = hwnd;
+	ofn.lpstrFile[0] = '\0';
+	ofn.nMaxFile = sizeof(szFile);
+	ofn.lpstrFilter = L"JPEG\0*.jpg\0";
+	ofn.Flags = OFN_PATHMUSTEXIST | OFN_FILEMUSTEXIST;
+
+	if (GetOpenFileName(&ofn) == TRUE) {
+		bitmap = LoadBitmapAndConvert(ofn.lpstrFile);
+		InvalidateRect(hwnd, nullptr, TRUE);
+	}
+}
+
+// --------------------------------------
+
+ULONG_PTR gdiPlusToken;
+void OnCreate()
+{
+	Gdiplus::GdiplusStartupInput gdiplusStartupInit;
+	Gdiplus::GdiplusStartup(&gdiPlusToken, &gdiplusStartupInit, nullptr);
+}
+
+void OnDestroy()
+{
+	if (bitmap) bitmap.reset();
+	Gdiplus::GdiplusShutdown(gdiPlusToken);
+}
+
 void OnPaint(HWND hwnd)
 {
 	PAINTSTRUCT ps;
 	HDC hdc = BeginPaint(hwnd, &ps);
+
+	if (bitmap)
+	{
+		HDC hdcMem = CreateCompatibleDC(hdc);
+		HBITMAP hb;
+		BITMAP bm;
+		bitmap->GetHBITMAP(Gdiplus::Color(0,0,0), &hb);
+		HBITMAP hbmOld = (HBITMAP)SelectObject(hdcMem, hb);
+		GetObject(hb, sizeof(bm), &bm);
+
+		RECT rect;
+		GetClientRect(hwnd, &rect);
+		FillRect(hdc, &rect, (HBRUSH) GetStockObject(WHITE_BRUSH));
+
+		//StretchBlt(hdc, client.left, client.top, client.right - client.left, client.bottom - client.top, hdcMem, 0, 0, bm.bmWidth, bm.bmHeight, SRCCOPY);
+		BitBlt(hdc, 0, 0, bm.bmWidth, bm.bmHeight, hdcMem, 0, 0, SRCCOPY);
+		
+		SelectObject(hdcMem, hbmOld);
+		DeleteDC(hdcMem);
+		DeleteObject(hb);
+	}
 
 	EndPaint(hwnd, &ps);
 }
