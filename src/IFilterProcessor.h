@@ -7,7 +7,7 @@ class IFilterProcessor
 public: 
 	virtual void ProcessImage(
 		const Gdiplus::BitmapData& source,
-		const Gdiplus::BitmapData& dest
+		Gdiplus::BitmapData& dest
 		) = 0;
 };
 

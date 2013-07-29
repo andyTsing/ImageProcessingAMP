@@ -3,7 +3,10 @@
 
 #include "BitmapUtils.h"
 #include "resource.h"
+
+#include "IFilterProcessor.h"
 #include "NegativeFilterProcessor.h"
+#include "NegativeFilterProcessorAMP.h"
 
 LRESULT CALLBACK WndProc(
 	HWND hwnd,
@@ -20,6 +23,7 @@ BitmapPtr bitmap;
 
 void OnFileOpenClick(HWND hwnd);
 void OnFiltersNegativeClick(HWND hwnd);
+void OnFiltersNegativeAMPClick(HWND);
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -55,6 +59,14 @@ int WINAPI WinMain(
 	return msg.wParam;
 }
 
+void InvalidateWindow(HWND hwnd)
+{
+	RECT windowrect;
+	GetClientRect(hwnd, &windowrect);
+	InvalidateRect(hwnd, &windowrect, TRUE);
+}
+
+
 LRESULT CALLBACK WndProc(
 	HWND hwnd,
 	UINT message,
@@ -75,7 +87,8 @@ LRESULT CALLBACK WndProc(
 			{
 			case IDC_FILE_EXIT: { DestroyWindow(hwnd); break; }
 			case IDC_FILE_OPEN: { OnFileOpenClick(hwnd); break; }
-			case IDC_FILTERS_NEGATIVE: { OnFiltersNegativeClick(hwnd); break; }
+			case IDC_FILTERS_NEGATIVE: { OnFiltersNegativeClick(hwnd); InvalidateWindow(hwnd); break; }
+			case IDC_FILTERS_NEGATIVE_AMP: { OnFiltersNegativeAMPClick(hwnd); InvalidateWindow(hwnd); break;}
 			}
 			return 0;
 		}
@@ -117,7 +130,8 @@ void OnFileOpenClick(HWND hwnd)
 	}
 }
 
-void OnFiltersNegativeClick(HWND hwnd)
+
+void ApplyFilter(IFilterProcessor& filter)
 {
 	BitmapPtr inBitmap = bitmap;
 
@@ -134,7 +148,6 @@ void OnFiltersNegativeClick(HWND hwnd)
 	outBitmap->LockBits(&rect, Gdiplus::ImageLockModeWrite,
 		PixelFormat32bppARGB, &processedImage);
 
-	NegativeFilterProcessor filter;
 	filter.ProcessImage(originalImage, processedImage);
 
 	bitmap = outBitmap;
@@ -142,9 +155,18 @@ void OnFiltersNegativeClick(HWND hwnd)
 	inBitmap->UnlockBits(&originalImage);
 	outBitmap->UnlockBits(&processedImage);
 
-	RECT windowrect;
-	GetClientRect(hwnd, &windowrect);
-	InvalidateRect(hwnd, &windowrect, TRUE);
+}
+
+void OnFiltersNegativeClick(HWND hwnd)
+{
+	NegativeFilterProcessor negative;
+	ApplyFilter(negative);
+}
+
+void OnFiltersNegativeAMPClick(HWND hwnd)
+{
+	NegativeFilterProcessorAMP negativeAMP;
+	ApplyFilter(negativeAMP);
 }
 
 

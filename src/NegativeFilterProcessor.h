@@ -8,7 +8,7 @@ class NegativeFilterProcessor : public IFilterProcessor
 public :
 	 void ProcessImage(
 		const Gdiplus::BitmapData& source,
-		const Gdiplus::BitmapData& dest
+		Gdiplus::BitmapData& dest
 		)
 	{
 		int bpp = Gdiplus::GetPixelFormatSize(dest.PixelFormat);

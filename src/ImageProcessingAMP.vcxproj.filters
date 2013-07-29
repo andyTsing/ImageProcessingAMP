@@ -32,6 +32,12 @@
     <ClInclude Include="NegativeFilterProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="AmpRgbPixel.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NegativeFilterProcessorAMP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ImageProcessingAMP.rc">
