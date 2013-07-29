@@ -3,6 +3,7 @@
 
 #include "BitmapUtils.h"
 #include "resource.h"
+#include "NegativeFilterProcessor.h"
 
 LRESULT CALLBACK WndProc(
 	HWND hwnd,
@@ -17,7 +18,8 @@ void OnDestroy();
 
 BitmapPtr bitmap;
 
-void OnFileOpenCommand(HWND hwnd);
+void OnFileOpenClick(HWND hwnd);
+void OnFiltersNegativeClick(HWND hwnd);
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -72,7 +74,8 @@ LRESULT CALLBACK WndProc(
 			switch (LOWORD(wparam))
 			{
 			case IDC_FILE_EXIT: { DestroyWindow(hwnd); break; }
-			case IDC_FILE_OPEN: { OnFileOpenCommand(hwnd); break; }
+			case IDC_FILE_OPEN: { OnFileOpenClick(hwnd); break; }
+			case IDC_FILTERS_NEGATIVE: { OnFiltersNegativeClick(hwnd); break; }
 			}
 			return 0;
 		}
@@ -93,7 +96,7 @@ LRESULT CALLBACK WndProc(
 	}
 }
 
-void OnFileOpenCommand(HWND hwnd)
+void OnFileOpenClick(HWND hwnd)
 {
 	OPENFILENAME ofn;
 	wchar_t szFile[1024];
@@ -113,6 +116,37 @@ void OnFileOpenCommand(HWND hwnd)
 		InvalidateRect(hwnd, nullptr, TRUE);
 	}
 }
+
+void OnFiltersNegativeClick(HWND hwnd)
+{
+	BitmapPtr inBitmap = bitmap;
+
+	BitmapPtr outBitmap = BitmapPtr(
+		inBitmap->Clone(0, 0, inBitmap->GetWidth(), inBitmap->GetHeight(),
+		PixelFormat32bppARGB));
+
+	Gdiplus::Rect rect(0, 0, inBitmap->GetWidth(), inBitmap->GetHeight());
+	Gdiplus::BitmapData originalImage;
+	inBitmap->LockBits(&rect, Gdiplus::ImageLockModeWrite,
+		PixelFormat32bppARGB, &originalImage);
+
+	Gdiplus::BitmapData processedImage;
+	outBitmap->LockBits(&rect, Gdiplus::ImageLockModeWrite,
+		PixelFormat32bppARGB, &processedImage);
+
+	NegativeFilterProcessor filter;
+	filter.ProcessImage(originalImage, processedImage);
+
+	bitmap = outBitmap;
+
+	inBitmap->UnlockBits(&originalImage);
+	outBitmap->UnlockBits(&processedImage);
+
+	RECT windowrect;
+	GetClientRect(hwnd, &windowrect);
+	InvalidateRect(hwnd, &windowrect, TRUE);
+}
+
 
 // --------------------------------------
 

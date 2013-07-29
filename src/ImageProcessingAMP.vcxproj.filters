@@ -26,6 +26,12 @@
     <ClInclude Include="BitmapUtils.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="IFilterProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="NegativeFilterProcessor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ImageProcessingAMP.rc">
