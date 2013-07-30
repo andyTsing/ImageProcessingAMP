@@ -32,17 +32,22 @@ public :
 			int count = 0;
 			int x = idx[1];
 			int y = idx[0];
-			for (int currentX = x - DIST ; currentX < (x + DIST); currentX++)
-				if (currentX >= 0 && currentX < w)  
-					for (int currentY = y - DIST ; currentY < (y + DIST); currentY++)
-						if (currentY >= 0 && currentY < h) 
-						{
-							RgbPixel pixel = UnpackPixel(asource[index<2>(currentY, currentX)]);
-							accum.r += pixel.r;
-							accum.g += pixel.g;
-							accum.b += pixel.b;
-							count ++;
-						}
+
+			using namespace concurrency::direct3d;
+			int startX = clamp(x - DIST, 0, w);
+			int endX = clamp(x + DIST, 0, w);
+			int startY = clamp(y - DIST, 0, h);
+			int endY = clamp(y + DIST, 0, h);
+
+			for (int currentX = startX ; currentX < endX; currentX++)
+				for (int currentY = startY ; currentY < endY; currentY++)
+				{
+					RgbPixel pixel = UnpackPixel(asource[index<2>(currentY, currentX)]);
+					accum.r += pixel.r;
+					accum.g += pixel.g;
+					accum.b += pixel.b;
+					count ++;
+				}
 
 			accum.r /= count; accum.g /= count; accum.b /= count;
 			adest[idx] = PackPixel(accum);

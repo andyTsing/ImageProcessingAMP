@@ -13,6 +13,7 @@
 #include "NegativeFilterProcessorAMP.h"
 #include "BlurFilterProcessor.h"
 #include "BlurFilterProcessorAMP.h"
+#include "BlurFilterProcessorUsingTexturesAMP.h"
 
 LRESULT CALLBACK WndProc(
 	HWND hwnd,
@@ -32,6 +33,7 @@ void OnFiltersNegativeClick();
 void OnFiltersNegativeAMPClick();
 void OnFiltersBlurClick();
 void OnFiltersBlurAMPClick();
+void OnFiltersBlurTextureAMPClick();
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -99,6 +101,7 @@ LRESULT CALLBACK WndProc(
 			case IDC_FILTERS_NEGATIVE_AMP: { OnFiltersNegativeAMPClick(); InvalidateWindow(hwnd); break;}
 			case IDC_FILTERS_BLUR: { OnFiltersBlurClick(); InvalidateWindow(hwnd); break;}
 			case IDC_FILTERS_BLUR_AMP: { OnFiltersBlurAMPClick(); InvalidateWindow(hwnd); break;}
+			case IDC_FILTERS_BLUR_TEXTURES_AMP: { OnFiltersBlurTextureAMPClick(); InvalidateWindow(hwnd); break; }
 			}
 			return 0;
 		}
@@ -203,6 +206,11 @@ void OnFiltersBlurAMPClick()
 	ApplyFilter(blurAMP);
 }
 
+void OnFiltersBlurTextureAMPClick()
+{
+	BlurFilterProcessorUsingTexturesAMP blurAMP;
+	ApplyFilter(blurAMP);
+}
 // --------------------------------------
 
 ULONG_PTR gdiPlusToken;
