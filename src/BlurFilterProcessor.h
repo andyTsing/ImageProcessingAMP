@@ -29,14 +29,17 @@ public :
 						for (int currentY = y - DIST ; currentY < (y + DIST); currentY++)
 							if (currentY >= 0 && currentY < h) 
 							{
-								COLORREF pixel = GetPixel(static_cast<byte *>(source.Scan0), currentX, currentY, dest.Stride, bpp);
+								COLORREF pixel = GetPixel(static_cast<byte *>(source.Scan0), 
+									currentX, currentY, dest.Stride, bpp);
 								accumR += GetRValue(pixel);
 								accumG += GetGValue(pixel);
 								accumB += GetBValue(pixel);
 								count ++;
 							}
 
-				SetPixel(static_cast<byte *>(dest.Scan0), x, y, dest.Stride, bpp, RGB(accumR / count, accumG / count, accumB / count));
+				SetPixel(static_cast<byte *>(dest.Scan0), x, y, dest.Stride, bpp, 
+					RGB(accumR / count, accumG / count, accumB / count));
 			}
 	}
 };
+

@@ -19,9 +19,11 @@ public :
 		const int w = source.Width;
 		const int h = source.Height;
 
-		array<ArgbPackedPixel, 2> asource(h, w), adest(h, w);
+		extent<2> e(h, w);
+		const array<ArgbPackedPixel, 2> asource(e, static_cast<ArgbPackedPixel*>(source.Scan0));
+		array<ArgbPackedPixel, 2> adest(e);
 
-		CopyIn(source, asource); 
+		//CopyIn(source, asource); 
 
 		concurrency::parallel_for_each(asource.extent, [=, &asource, &adest](index<2> idx) restrict (amp) {
 			RgbPixel accum;
@@ -50,3 +52,4 @@ public :
 		CopyOut(adest, dest);
 	}
 };
+
