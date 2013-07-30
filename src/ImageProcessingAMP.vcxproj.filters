@@ -41,6 +41,9 @@
     <ClInclude Include="BlurFilterProcessor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="BlurFilterProcessorAMP.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="ImageProcessingAMP.rc">

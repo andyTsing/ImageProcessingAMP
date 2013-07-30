@@ -16,8 +16,7 @@ public :
 	{
 		using namespace concurrency;
 
-		accelerator acc;
-		array<ArgbPackedPixel, 2> a((int)source.Height, (int)source.Width, acc.default_view);
+		array<ArgbPackedPixel, 2> a((int)source.Height, (int)source.Width);
 
 		CopyIn(source, a); 
 

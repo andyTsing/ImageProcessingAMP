@@ -86,6 +86,7 @@
     <ClInclude Include="AmpRgbPixel.h" />
     <ClInclude Include="BitmapUtils.h" />
     <ClInclude Include="BlurFilterProcessor.h" />
+    <ClInclude Include="BlurFilterProcessorAMP.h" />
     <ClInclude Include="IFilterProcessor.h" />
     <ClInclude Include="NegativeFilterProcessor.h" />
     <ClInclude Include="NegativeFilterProcessorAMP.h" />

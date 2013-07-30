@@ -8,6 +8,7 @@
 #include "NegativeFilterProcessor.h"
 #include "NegativeFilterProcessorAMP.h"
 #include "BlurFilterProcessor.h"
+#include "BlurFilterProcessorAMP.h"
 
 LRESULT CALLBACK WndProc(
 	HWND hwnd,
@@ -23,9 +24,10 @@ void OnDestroy();
 BitmapPtr bitmap;
 
 void OnFileOpenClick(HWND hwnd);
-void OnFiltersNegativeClick(HWND hwnd);
-void OnFiltersNegativeAMPClick(HWND);
-void OnFiltersBlurClick(HWND);
+void OnFiltersNegativeClick();
+void OnFiltersNegativeAMPClick();
+void OnFiltersBlurClick();
+void OnFiltersBlurAMPClick();
 
 int WINAPI WinMain(
 	HINSTANCE hInstance,
@@ -89,9 +91,10 @@ LRESULT CALLBACK WndProc(
 			{
 			case IDC_FILE_EXIT: { DestroyWindow(hwnd); break; }
 			case IDC_FILE_OPEN: { OnFileOpenClick(hwnd); break; }
-			case IDC_FILTERS_NEGATIVE: { OnFiltersNegativeClick(hwnd); InvalidateWindow(hwnd); break; }
-			case IDC_FILTERS_NEGATIVE_AMP: { OnFiltersNegativeAMPClick(hwnd); InvalidateWindow(hwnd); break;}
-			case IDC_FILTERS_BLUR: { OnFiltersBlurClick(hwnd); InvalidateWindow(hwnd); break;}
+			case IDC_FILTERS_NEGATIVE: { OnFiltersNegativeClick(); InvalidateWindow(hwnd); break; }
+			case IDC_FILTERS_NEGATIVE_AMP: { OnFiltersNegativeAMPClick(); InvalidateWindow(hwnd); break;}
+			case IDC_FILTERS_BLUR: { OnFiltersBlurClick(); InvalidateWindow(hwnd); break;}
+			case IDC_FILTERS_BLUR_AMP: { OnFiltersBlurAMPClick(); InvalidateWindow(hwnd); break;}
 			}
 			return 0;
 		}
@@ -160,24 +163,29 @@ void ApplyFilter(IFilterProcessor& filter)
 
 }
 
-void OnFiltersNegativeClick(HWND hwnd)
+void OnFiltersNegativeClick()
 {
 	NegativeFilterProcessor negative;
 	ApplyFilter(negative);
 }
 
-void OnFiltersNegativeAMPClick(HWND hwnd)
+void OnFiltersNegativeAMPClick()
 {
 	NegativeFilterProcessorAMP negativeAMP;
 	ApplyFilter(negativeAMP);
 }
 
-void OnFiltersBlurClick(HWND hwnd)
+void OnFiltersBlurClick()
 {
 	BlurFilterProcessor blur;
 	ApplyFilter(blur);
 }
 
+void OnFiltersBlurAMPClick()
+{
+	BlurFilterProcessorAMP blurAMP;
+	ApplyFilter(blurAMP);
+}
 
 // --------------------------------------
 
@@ -218,6 +226,8 @@ void OnPaint(HWND hwnd)
 		SelectObject(hdcMem, hbmOld);
 		DeleteDC(hdcMem);
 		DeleteObject(hb);
+
+		//DrawText(hdc, L"Exemplo"
 	}
 
 	EndPaint(hwnd, &ps);
