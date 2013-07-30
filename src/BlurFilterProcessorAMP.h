@@ -22,7 +22,7 @@ public :
 		extent<2> e(h, w);
 		const array<ArgbPackedPixel, 2> asource(e, static_cast<ArgbPackedPixel*>(source.Scan0));
 		array<ArgbPackedPixel, 2> adest(e);
-
+		//array<ArgbPackedPixel, 2> asource(e);
 		//CopyIn(source, asource); 
 
 		concurrency::parallel_for_each(asource.extent, [=, &asource, &adest](index<2> idx) restrict (amp) {

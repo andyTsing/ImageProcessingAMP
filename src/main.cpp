@@ -1,6 +1,10 @@
 #include <Windows.h>
 #include <gdiplus.h>
 
+#include <iomanip>
+#include <sstream>
+#include <string>
+
 #include "BitmapUtils.h"
 #include "resource.h"
 
@@ -136,9 +140,19 @@ void OnFileOpenClick(HWND hwnd)
 	}
 }
 
+double ComputeElapsedTime(const LARGE_INTEGER& start, const LARGE_INTEGER& end)
+{
+	LARGE_INTEGER frequency;
+	QueryPerformanceFrequency(&frequency);
+	return ((double(end.QuadPart) - double(start.QuadPart)) * 1000.0 / (double(frequency.QuadPart)));
+}
 
+double elapsedTime;
 void ApplyFilter(IFilterProcessor& filter)
 {
+	LARGE_INTEGER start, end;
+	QueryPerformanceCounter(&start);
+
 	BitmapPtr inBitmap = bitmap;
 
 	BitmapPtr outBitmap = BitmapPtr(
@@ -161,6 +175,8 @@ void ApplyFilter(IFilterProcessor& filter)
 	inBitmap->UnlockBits(&originalImage);
 	outBitmap->UnlockBits(&processedImage);
 
+	QueryPerformanceCounter(&end);
+	elapsedTime = ComputeElapsedTime(start, end);
 }
 
 void OnFiltersNegativeClick()
@@ -227,7 +243,10 @@ void OnPaint(HWND hwnd)
 		DeleteDC(hdcMem);
 		DeleteObject(hb);
 
-		//DrawText(hdc, L"Exemplo"
+		std::wstringstream stream;
+		stream << std::fixed << std::setprecision(2) << elapsedTime;
+		std::wstring s = stream.str();
+		TextOut(hdc, 0, 0, s.c_str(), s.length());
 	}
 
 	EndPaint(hwnd, &ps);
